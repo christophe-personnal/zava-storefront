@@ -2,7 +2,7 @@ lockfile_version: '1'
 generated_at: '2026-05-07T23:57:26.502703+00:00'
 apm_version: 0.12.2
 dependencies:
-- repo_url: DevExpGbb/zava-agent-config
+- repo_url: hackathon-brown-eagle-55/zava-agent-config
   host: github.com
   resolved_commit: 7a12679a9e1f55e06d16616ed0244b5fdeaad3da
   resolved_ref: v5.0.1
@@ -14,7 +14,7 @@ dependencies:
   deployed_file_hashes:
     .github/agents/architect.agent.md: sha256:de74154b914769a13b4dc594f998db0e745280f8890af1ca526f10b10d0ecc5a
   content_hash: sha256:bb505597414ca6787bb4cee8075c1d2f0ebc63c358792c2f4a7a5aa4dfe108a9
-- repo_url: DevExpGbb/zava-agent-config
+- repo_url: hackathon-brown-eagle-55/zava-agent-config
   host: github.com
   resolved_commit: 7a12679a9e1f55e06d16616ed0244b5fdeaad3da
   resolved_ref: v5.0.1
@@ -24,7 +24,7 @@ dependencies:
   deployed_files:
   - .agents/skills/incident-to-pr
   content_hash: sha256:0f69245549bb931ddd009f09c736d8f63998f64fb6dc1a0a9ce133eb86e76335
-- repo_url: DevExpGbb/zava-agent-config
+- repo_url: hackathon-brown-eagle-55/zava-agent-config
   host: github.com
   resolved_commit: 7a12679a9e1f55e06d16616ed0244b5fdeaad3da
   resolved_ref: v5.0.1
@@ -36,7 +36,7 @@ dependencies:
   deployed_file_hashes:
     .github/instructions/ci-cd-golden-paths.instructions.md: sha256:2fbe12eb300b75f8bc09ddb461c252a48c5b355c4aaf44f689d3b56b2086bb20
   content_hash: sha256:68d410244792d9650337f5ba9debf2233a3830fc0c4e5004ef4db90acb8c8be3
-- repo_url: DevExpGbb/zava-agent-config
+- repo_url: hackathon-brown-eagle-55/zava-agent-config
   host: github.com
   resolved_commit: 7a12679a9e1f55e06d16616ed0244b5fdeaad3da
   resolved_ref: v5.0.1
@@ -46,7 +46,7 @@ dependencies:
   deployed_files:
   - .agents/skills/panel-review
   content_hash: sha256:6c34beac889dab8124b1c8f08783390264d976764d9b9012af3d0ea069ec5b22
-- repo_url: DevExpGbb/zava-agent-config
+- repo_url: hackathon-brown-eagle-55/zava-agent-config
   host: github.com
   resolved_commit: 7a12679a9e1f55e06d16616ed0244b5fdeaad3da
   resolved_ref: v5.0.1

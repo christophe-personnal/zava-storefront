@@ -1055,7 +1055,7 @@ jobs:
           apps_json=${AW_APM_APPS:-null}
           legacy_id=${AW_APM_LEGACY_APP_ID:-}
 
-          # gh-aw substitutes `["DevExpGbb/zava-agent-config/plugins/review-kit#v5.0.1"]` at
+          # gh-aw substitutes `["hackathon-brown-eagle-55/zava-agent-config/plugins/review-kit#v5.0.1"]` at
           # compile time using Go's default slice formatter, which emits
           # `[a b c]` (space-separated, no quotes) instead of valid JSON.
           # That breaks `jq --argjson` below. Repair string-array inputs
@@ -1126,7 +1126,7 @@ jobs:
           AW_APM_LEGACY_OWNER: ${{ github.aw.import-inputs.owner }}
           AW_APM_LEGACY_PRIVATE_KEY: ${{ github.aw.import-inputs.private-key }}
           AW_APM_LEGACY_REPOS: ${{ github.aw.import-inputs.repositories }}
-          AW_APM_PACKAGES: "[\"DevExpGbb/zava-agent-config/plugins/review-kit#v5.0.1\"]"
+          AW_APM_PACKAGES: "[\"hackathon-brown-eagle-55/zava-agent-config/plugins/review-kit#v5.0.1\"]"
 
   conclusion:
     needs:
