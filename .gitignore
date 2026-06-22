@@ -3,6 +3,7 @@
 out/
 dist/
 build/
+coverage/
 
 # Dependencies
 node_modules/
