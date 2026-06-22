@@ -1,0 +1,114 @@
+{
+  "version": "0.0.1",
+  "evals": {
+    "content": [
+      {
+        "name": "pr_with_security_issue",
+        "prompt": "Review this PR: It adds a new API endpoint for user authentication. The code includes a hardcoded API key in the connection string and uses MD5 for password hashing. The CHANGELOG has no entry for this new endpoint. The auth service imports from the HTTP handlers module.",
+        "expected_structure": {
+          "includes_recommendation": true,
+          "includes_reasoning": true,
+          "findings_per_dimension": ["security", "architecture", "documentation"],
+          "sorted_by_severity": true
+        },
+        "expected_findings_min": 3,
+        "note": "Should detect security issue (hardcoded key, weak crypto), architecture issue (circular import), and doc issue (missing CHANGELOG)"
+      },
+      {
+        "name": "large_pr_efficiency",
+        "prompt": "Review this PR: It modifies 150 files and adds 5000 lines of code across a service migration. All code follows security guidelines, architecture is clean, and CHANGELOG is updated.",
+        "expected_structure": {
+          "recommendation": "ADVISE_MERGE",
+          "completes_in_seconds": 60
+        },
+        "note": "Large PRs should complete within reasonable time; no batching errors or timeouts"
+      },
+      {
+        "name": "pr_custom_guidelines_respected",
+        "prompt": "Review this PR: It uses the team's custom security guidelines (as provided). The code violates a custom threat category defined in the security guidelines but not in standard OWASP.",
+        "expected_structure": {
+          "respects_custom_guidelines": true
+        },
+        "note": "Skill should ground in custom guideline file, not generic LLM knowledge"
+      }
+    ],
+    "trigger": [
+      {
+        "should_trigger": true,
+        "query": "Review this PR against our guidelines",
+        "rationale": "Direct request to review PR against guidelines"
+      },
+      {
+        "should_trigger": true,
+        "query": "Run PR review on the open pull request",
+        "rationale": "Explicit 'run PR review' trigger"
+      },
+      {
+        "should_trigger": true,
+        "query": "Check this diff against our standards",
+        "rationale": "Audit/check phrasing with standards"
+      },
+      {
+        "should_trigger": true,
+        "query": "Audit the PR for security, architecture, docs",
+        "rationale": "Explicit multi-lens audit request"
+      },
+      {
+        "should_trigger": true,
+        "query": "Does this PR follow our guidelines?",
+        "rationale": "Question form of guideline compliance check"
+      },
+      {
+        "should_trigger": true,
+        "query": "Scan this PR before we merge",
+        "rationale": "Pre-merge scanning trigger"
+      },
+      {
+        "should_trigger": false,
+        "query": "Write a good PR description for my changes",
+        "rationale": "Unrelated to reviewing against guidelines"
+      },
+      {
+        "should_trigger": false,
+        "query": "How do I write a PR for this project?",
+        "rationale": "General PR guidance, not guidelines review"
+      },
+      {
+        "should_trigger": false,
+        "query": "Can you approve this PR?",
+        "rationale": "Approval request; this skill does not approve"
+      },
+      {
+        "should_trigger": false,
+        "query": "Fix the issues in this PR?",
+        "rationale": "Fix request; this skill reviews, does not fix"
+      },
+      {
+        "should_trigger": false,
+        "query": "Merge this PR automatically",
+        "rationale": "Auto-merge request; this skill does not merge"
+      },
+      {
+        "should_trigger": false,
+        "query": "What are the GitHub PR guidelines?",
+        "rationale": "Meta question about GitHub, not PR review against guidelines"
+      }
+    ],
+    "baseline_comparison": {
+      "without_skill": [
+        {
+          "prompt": "Review this PR for issues",
+          "agent_behavior": "Generic pattern matching; mixes ad-hoc findings without structure; no grounding in custom guidelines",
+          "output_quality": "inconsistent, no guaranteed format"
+        }
+      ],
+      "with_skill": [
+        {
+          "prompt": "Review this PR for issues",
+          "agent_behavior": "Skill activates; reads custom guideline files; spawns 3 lenses in parallel; synthesizes structured comment",
+          "output_quality": "consistent format: recommendation + reasoning + findings per dimension sorted by severity"
+        }
+      ]
+    }
+  }
+}
