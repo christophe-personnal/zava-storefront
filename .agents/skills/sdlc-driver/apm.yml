@@ -1,0 +1,142 @@
+name: sdlc-driver
+version: 1.0.0
+description: Orchestrate a build-and-review loop on a pull request.
+author: zava-team
+license: MIT
+
+# External dependencies: builder and review-panel skills
+# These skills are composed by sdlc-driver as subagents.
+dependencies:
+  # builder: performs code remediation based on findings
+  # Expected to accept: findings (JSON), prior context (JSON)
+  # Returns: status, changes_made, deferred_reason
+  builder:
+    path: .agents/skills/builder
+    version: ">=1.0.0"
+    type: skill
+    optional: false
+    description: "Implements findings from checks and code review"
+  
+  # review-panel: performs multi-lens code review
+  # Expected inputs: PR metadata
+  # Returns: findings (JSON), summary (text)
+  review-panel:
+    path: .agents/skills/review-panel
+    version: ">=1.0.0"
+    type: skill
+    optional: false
+    description: "Conducts code review using multiple specialized lenses"
+
+# Scripts bundled with the skill
+scripts:
+  - name: deterministic-checks.sh
+    description: Run npm lint + test; emit structured JSON findings
+    entry: scripts/deterministic-checks.sh
+    language: bash
+    interactive: false
+  
+  - name: summary-reporter.sh
+    description: Format loop summary for human display and JSON export
+    entry: scripts/summary-reporter.sh
+    language: bash
+    interactive: false
+
+# Assets available for lazy loading
+assets:
+  - name: loop-state
+    path: references/loop-state.md
+    trigger: "when understanding loop state schema or findings ledger"
+  
+  - name: findings-rules
+    path: references/findings-rules.md
+    trigger: "when tuning scope-crossing categorization or customizing scope_bounds"
+
+# Declared target harnesses
+targets:
+  - common-only
+
+# Cost band annotations
+cost_bands:
+  trivial: "~500 tokens (1 iteration, checks only)"
+  known_module: "~10k-15k tokens (2-3 iterations)"
+  complex: "~16k-25k tokens (4-5 iterations)"
+
+# Capabilities required at runtime
+runtime_requirements:
+  - task_spawn
+  - session_artifacts
+  - terminal_bridge_s7
+
+# Key configuration options
+config:
+  max_iterations:
+    type: integer
+    default: 5
+    description: "Maximum loop iterations before capping"
+  
+  scope_bounds:
+    type: object
+    default: |
+      {
+        "lint": "in-scope",
+        "test": "in-scope",
+        "style": "in-scope",
+        "correctness": "in-scope",
+        "test-coverage": "in-scope",
+        "architecture": "scope-crossing",
+        "design-philosophy": "scope-crossing"
+      }
+    description: "Categorization of findings (in-scope vs scope-crossing)"
+  
+  npm_lint_command:
+    type: string
+    default: "npm run lint"
+    description: "Custom linting command (overrides default)"
+  
+  npm_test_command:
+    type: string
+    default: "npm run test -- --coverage"
+    description: "Custom test command (overrides default)"
+
+# Evals manifest
+evals:
+  - id: "convergence-test"
+    name: "Loop converges when checks + review are clean"
+    type: content_eval
+    description: "Run skill on a PR with linting errors and minor review findings; verify loop converges in 2-3 passes"
+  
+  - id: "cap-test"
+    name: "Loop caps at max iterations"
+    type: content_eval
+    description: "Run skill on a PR with persistent issues; verify loop stops at iteration cap and reports deferred findings"
+  
+  - id: "scope-crossing-test"
+    name: "Scope-crossing findings are deferred"
+    type: content_eval
+    description: "Run skill on a PR with mixed in-scope and architecture findings; verify architecture findings are deferred"
+  
+  - id: "trigger-eval-set"
+    name: "Trigger evaluation set (~20 queries)"
+    type: trigger_eval
+    description: "8-10 should-trigger queries; 8-10 should-not-trigger queries; 60/40 train/val split"
+
+# Metadata
+keywords:
+  - orchestration
+  - pull-request
+  - code-review
+  - quality-gate
+  - reconciliation-loop
+  - sdlc
+
+# References for future maintainers
+references:
+  - name: "Genesis Handoff Packet"
+    path: "../.."
+    description: "Full design artifacts and architecture diagrams (Step 6 of genesis process)"
+  - name: "Loop State Schema"
+    path: "references/loop-state.md"
+    description: "Findings ledger, loop state table, convergence conditions"
+  - name: "Findings Categorization"
+    path: "references/findings-rules.md"
+    description: "In-scope vs scope-crossing; customization rules"
