@@ -4,9 +4,16 @@ This skill requires your team to provide three custom guideline files that defin
 
 ## Step 1: Create Guideline Files
 
-In your repository, create three markdown files that capture your team's review standards. Place them in a `docs/` folder or your preferred location.
+In your repository root, create a `guidelines/` folder with three markdown files that capture your team's review standards.
 
-### `docs/security-guidelines.md`
+```
+./guidelines/
+├── security.md
+├── architecture.md
+└── documentation.md
+```
+
+### `guidelines/security.md`
 
 This file defines security threats and patterns your team cares about. Example structure:
 
@@ -44,7 +51,7 @@ This file defines security threats and patterns your team cares about. Example s
 - Pin all versions; no floating semvers
 ```
 
-### `docs/architecture-guidelines.md`
+### `guidelines/architecture.md`
 
 This file defines your system's layering, coupling rules, and design principles. Example:
 
@@ -75,7 +82,7 @@ This file defines your system's layering, coupling rules, and design principles.
 - HTTP handlers that contain business logic
 ```
 
-### `docs/documentation-guidelines.md`
+### `guidelines/documentation.md`
 
 This file defines changelog, docstring, and API documentation standards. Example:
 
@@ -104,20 +111,33 @@ This file defines changelog, docstring, and API documentation standards. Example
 - Status codes documented (200, 400, 404, 500)
 ```
 
-## Step 2: Update the Script Paths (if needed)
+## Step 2: Configure Paths (if needed)
 
-By default, the skill looks for:
-- `docs/security-guidelines.md`
-- `docs/architecture-guidelines.md`
-- `docs/documentation-guidelines.md`
+By default, the skill looks for guidelines in:
+- `guidelines/security.md`
+- `guidelines/architecture.md`
+- `guidelines/documentation.md`
 
-If your files are elsewhere, edit `scripts/load-guidelines.sh` and update the DEFAULTS section:
+If your guidelines are elsewhere or have different names, you have two options:
+
+**Option A: Edit script defaults (permanent change)**
+
+Edit `scripts/load-guidelines.sh` and update the DEFAULTS section:
 
 ```bash
 # Defaults (customize for your repo)
 SECURITY_GUIDELINE="${1:-path/to/your/security.md}"
 ARCHITECTURE_GUIDELINE="${2:-path/to/your/architecture.md}"
 DOCUMENTATION_GUIDELINE="${3:-path/to/your/documentation.md}"
+```
+
+**Option B: Pass paths at runtime (temporary override)**
+
+```bash
+./scripts/load-guidelines.sh \
+  path/to/your/security.md \
+  path/to/your/architecture.md \
+  path/to/your/documentation.md
 ```
 
 ## Step 3: Install GitHub CLI

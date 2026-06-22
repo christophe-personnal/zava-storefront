@@ -11,9 +11,9 @@
 set -euo pipefail
 
 # Defaults (customize for your repo)
-SECURITY_GUIDELINE="${1:-docs/security-guidelines.md}"
-ARCHITECTURE_GUIDELINE="${2:-docs/architecture-guidelines.md}"
-DOCUMENTATION_GUIDELINE="${3:-docs/documentation-guidelines.md}"
+SECURITY_GUIDELINE="${1:-guidelines/security.md}"
+ARCHITECTURE_GUIDELINE="${2:-guidelines/architecture.md}"
+DOCUMENTATION_GUIDELINE="${3:-guidelines/documentation.md}"
 
 # Help
 if [[ "${1:-}" == "--help" ]] || [[ "${1:-}" == "-h" ]]; then

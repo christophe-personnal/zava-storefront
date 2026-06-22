@@ -40,11 +40,24 @@ dimension (Security, Architecture, Documentation), each sorted by criticality.
 
 ### Step 1: Load Guideline Files
 
-First, read your team's three custom guideline documents. These are the source
-of truth for each review dimension.
+First, read your team's three custom guideline documents from the `./guidelines` directory. These are the source of truth for each review dimension.
 
 ```sh
-load-guidelines.sh <pr_url>
+load-guidelines.sh
+```
+
+By default, the script looks for:
+- `guidelines/security.md`
+- `guidelines/architecture.md`
+- `guidelines/documentation.md`
+
+If your files have different names or are elsewhere, pass paths as arguments:
+
+```sh
+./scripts/load-guidelines.sh \
+  path/to/your/security.md \
+  path/to/your/architecture.md \
+  path/to/your/documentation.md
 ```
 
 This script emits structured data:
@@ -220,11 +233,11 @@ The posted comment always follows this structure:
 
 The `load-guidelines.sh` script reads your three guideline files. By default it
 looks for:
-- `docs/security-guidelines.md`
-- `docs/architecture-guidelines.md`
-- `docs/documentation-guidelines.md`
+- `guidelines/security.md`
+- `guidelines/architecture.md`
+- `guidelines/documentation.md`
 
-If your files are elsewhere, edit the script or pass paths as arguments:
+If your files are elsewhere or have different names, pass paths as arguments:
 
 ```sh
 ./scripts/load-guidelines.sh \
