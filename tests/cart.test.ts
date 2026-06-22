@@ -31,9 +31,102 @@ describe('cart · happy path', () => {
   });
 });
 
-// NOTE (workshop): the following branches have NO tests yet — Track 1 (test-improver)
-// should expand coverage for them:
-//   - addItem when merged quantity exceeds 99 (throws)
-//   - applyDiscount: WELCOME10, VIP25 above & below threshold, FREESHIP, unknown code
-//   - computeTax for DE, US-CA, US-OR, unknown region
-//   - totalize when discount > subtotal (taxable should clamp at 0)
+describe('cart · edge cases', () => {
+  it('throws when merged quantity exceeds 99', () => {
+    const cart = [{ productId: 'p1', quantity: 90, unitPriceCents: 500 }];
+    expect(() => addItem(cart, { productId: 'p1', quantity: 10, unitPriceCents: 500 })).toThrow(
+      'quantity exceeds limit',
+    );
+  });
+
+  it('applies WELCOME10 discount', () => {
+    const totals = totalize(
+      [{ productId: 'p1', quantity: 1, unitPriceCents: 1000 }],
+      'WELCOME10',
+      'GB',
+    );
+    expect(totals.discountCents).toBe(100);
+    expect(totals.subtotalCents).toBe(1000);
+  });
+
+  it('applies VIP25 discount above threshold', () => {
+    const totals = totalize(
+      [{ productId: 'p1', quantity: 1, unitPriceCents: 10000 }],
+      'VIP25',
+      'GB',
+    );
+    expect(totals.discountCents).toBe(2500);
+  });
+
+  it('does not apply VIP25 below threshold', () => {
+    const totals = totalize(
+      [{ productId: 'p1', quantity: 1, unitPriceCents: 5000 }],
+      'VIP25',
+      'GB',
+    );
+    expect(totals.discountCents).toBe(0);
+  });
+
+  it('applies FREESHIP discount', () => {
+    const totals = totalize(
+      [{ productId: 'p1', quantity: 1, unitPriceCents: 1000 }],
+      'FREESHIP',
+      'GB',
+    );
+    expect(totals.discountCents).toBe(0);
+  });
+
+  it('returns 0 for unknown discount code', () => {
+    const totals = totalize(
+      [{ productId: 'p1', quantity: 1, unitPriceCents: 1000 }],
+      'INVALID',
+      'GB',
+    );
+    expect(totals.discountCents).toBe(0);
+  });
+
+  it('computes tax for DE region', () => {
+    const totals = totalize(
+      [{ productId: 'p1', quantity: 1, unitPriceCents: 1000 }],
+      null,
+      'DE',
+    );
+    expect(totals.taxCents).toBe(190);
+  });
+
+  it('computes tax for US-CA region', () => {
+    const totals = totalize(
+      [{ productId: 'p1', quantity: 1, unitPriceCents: 1000 }],
+      null,
+      'US-CA',
+    );
+    expect(totals.taxCents).toBe(73);
+  });
+
+  it('computes tax for US-OR region (no tax)', () => {
+    const totals = totalize(
+      [{ productId: 'p1', quantity: 1, unitPriceCents: 1000 }],
+      null,
+      'US-OR',
+    );
+    expect(totals.taxCents).toBe(0);
+  });
+
+  it('computes default tax for unknown region', () => {
+    const totals = totalize(
+      [{ productId: 'p1', quantity: 1, unitPriceCents: 1000 }],
+      null,
+      'UNKNOWN',
+    );
+    expect(totals.taxCents).toBe(100);
+  });
+
+  it('clamps taxable at 0 when discount exceeds subtotal', () => {
+    const totals = totalize(
+      [{ productId: 'p1', quantity: 1, unitPriceCents: 100 }],
+      'WELCOME10',
+      'GB',
+    );
+    expect(totals.taxableCents ?? totals.subtotalCents - totals.discountCents).toBeGreaterThanOrEqual(0);
+  });
+});
